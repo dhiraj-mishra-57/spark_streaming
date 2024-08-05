@@ -1,4 +1,6 @@
 Kafka
+    List Topic:
+        *   kafka-topics.sh --list --bootstrap-server localhost:9092
     Create Topic:
         *  kafka-topics.sh --create --topic spark-streaming --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
     Delete Topic:

@@ -52,7 +52,7 @@ producer = Producer(kafka_conf)
 # Producing employee data to Kafka topic
 topic = 'spark-streaming'
 
-for i in range(1, 20):
+for i in range(1, 100):
     data = generate_employee(department["HR"])
 
     # convert message to utf-8 encoding
@@ -64,4 +64,4 @@ for i in range(1, 20):
     # Wait up to 1 second for events. Callbacks will be invoked during this method call if they are ready.
     producer.flush(1)
 
-    time.sleep(3)
+    time.sleep(5)

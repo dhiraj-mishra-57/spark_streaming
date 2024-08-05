@@ -1,6 +1,18 @@
+from pyspark import SparkConf
 from pyspark.sql import SparkSession
 
-spark = SparkSession.builder.appName("KafkaSparkStreaming").getOrCreate()
+# Disable Hadoop native libraries
+conf = SparkConf()
+conf.set("spark.hadoop.io.nativeio.enable", "false")
+
+# Initialize Spark session with the configuration
+spark = SparkSession.builder \
+    .appName("KafkaExample") \
+    .config("spark.streaming.stopGracefullyonShutdown", True)\
+    .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0")\
+    .config("spark.sql.shuffle.partitions", 4)\
+    .master("local[*]")\
+    .getOrCreate()
 
 # Configuration settings for Kafka Producer
 kafka_bootstrap_servers = "localhost:9092"  # Replace with your Kafka broker address
@@ -12,6 +24,7 @@ df = spark.readStream\
     .format('kafka')\
         .option('kafka.bootstrap.servers', kafka_bootstrap_servers)\
             .option('subscribe', kafka_topic)\
+            .option('startingoffsets', 'earliest')\
                 .load()
 
 # Kafka data is in binary format, so you need to cast it to string
@@ -21,11 +34,8 @@ df = df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")
 query = df.writeStream \
     .outputMode("append") \
     .format("console") \
+    .option("checkpointLocation", "C:\\Users\\dhira") \
     .start()
-
-print('-' * 100)
-print('HERE')
-print('-' * 100)
 
 # Await termination
 query.awaitTermination()
