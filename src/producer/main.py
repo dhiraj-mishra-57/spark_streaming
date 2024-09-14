@@ -10,12 +10,12 @@ from confluent_kafka import Producer
 fake = Faker()
 
 department = {
-    "Finance": 5000,
-    "Marketing": 6000,
-    "HR": 7000,
-    "Engineering":  8000,
-    "Sales": 9000
-    }
+    5000: 'Finance',
+    6000: 'Marketing',
+    7000: 'HR',
+    8000: 'Engineering',
+    9000: 'Sales'
+}
 
 def generate_employee(department_id):
     first_name = fake.first_name()
@@ -24,7 +24,7 @@ def generate_employee(department_id):
         'employee_id': random.randint(100000, 999999),  # 6-digit number
         'first_name': first_name,
         'last_name': last_name,
-        'department_id': department_id,
+        'department_name': department[department_id],
         'job_title': fake.job(),
         'salary': round(random.uniform(30000, 200000), 2),
         'hire_date': fake.date_between(start_date='-10y', end_date='today').isoformat(),
@@ -53,7 +53,7 @@ producer = Producer(kafka_conf)
 topic = 'sparkStreaming'
 
 for i in range(1, 50):
-    data = generate_employee(department["HR"])
+    data = generate_employee(random.choice([5000, 6000, 7000, 8000, 9000]))
 
     # convert message to utf-8 encoding
     message = json.dumps(data).encode('utf-8')
@@ -64,4 +64,4 @@ for i in range(1, 50):
     # Wait up to 1 second for events. Callbacks will be invoked during this method call if they are ready.
     producer.flush(1)
 
-    time.sleep(10)
+    time.sleep(5)
