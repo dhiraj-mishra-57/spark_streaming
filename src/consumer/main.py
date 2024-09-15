@@ -8,7 +8,7 @@ spark = SparkSession.builder \
     .appName("KafkaExample") \
     .config("spark.streaming.stopGracefullyonShutdown", True)\
     .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0")\
-    .config("spark.jars", r"V:\Upskill\Github\Repositories\real_time_streaming\documentation\postgres_driver\postgresql-42.7.4.jar")\
+    .config("spark.jars.packages", "org.postgresql:postgresql:42.7.4") \
     .config("spark.sql.shuffle.partitions", 4)\
     .master("local[*]")\
     .getOrCreate()
