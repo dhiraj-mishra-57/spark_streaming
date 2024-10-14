@@ -82,13 +82,14 @@ def process_batches(df, epoch_id):
         .option("dbtable", "employees") \
         .option("user", username) \
         .option("password", password) \
-        .option("driver", "org.postgresql.Driver")\
+        .option("driver", "org.postgresql.Driver") \
         .save()
     print("~~~~~~~~~~~~~~~~~~~~~~ data loaded ~~~~~~~~~~~~~~~~~~~~~~")
         
 
 # Define a query to postgre table: employees
 query = final_df.writeStream \
+            .trigger(processingTime='10 seconds') \
                     .foreachBatch(process_batches) \
                         .outputMode("append") \
                             .start()\
